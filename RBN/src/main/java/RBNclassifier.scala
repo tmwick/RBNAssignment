@@ -13,14 +13,14 @@ import java.lang.Float
 object RBNclassifier {
   def main(args: Array[String]): Unit = {
     
-    val modified_file = new PrintWriter(new File("D:/data/cal_data.txt" ))
+    val modified_file = new PrintWriter(new File("./data/cal_data.txt" ))
     System.setProperty("hadoop.home.dir", "D:/BSC IT/L4S1/ANN/hadoop-2.6.4/bin");
     val spark = SparkSession
       .builder
       .appName("Tt").master("local")
       .getOrCreate()
     
-val libsvm_dataset = spark.read.format("libsvm").load("D:/data/fdata.txt")
+val libsvm_dataset = spark.read.format("libsvm").load("./data/fdata.txt")
 
 // applying k means clustering, dividing into 5 clusters
 val kmeans = new KMeans().setK(5).setSeed(1L)
@@ -36,7 +36,7 @@ model.clusterCenters.foreach(println)
 
 var clusterarray:Array[Vector] = new Array[Vector](5)
 
-val formatted_source = scala.io.Source.fromFile("D:/data/fdata.txt")
+val formatted_source = scala.io.Source.fromFile("./data/fdata.txt")
 
 // Trains a k-means model.
     var psi_value:Double =0 
@@ -56,7 +56,7 @@ val formatted_source = scala.io.Source.fromFile("D:/data/fdata.txt")
    modified_file.close()
 
     
-val data = spark.read.format("libsvm").load("D://data//cal_data.txt")
+val data = spark.read.format("libsvm").load("./data/cal_data.txt")
 
     // Split the data into train and test
     val splits = data.randomSplit(Array(0.5, 0.5), seed = 1234L)
@@ -83,7 +83,7 @@ val data = spark.read.format("libsvm").load("D://data//cal_data.txt")
     val predictionAndLabels = result.select("prediction", "label")
     val evaluator = new MulticlassClassificationEvaluator()
       .setMetricName("accuracy")
-      result.rdd.saveAsTextFile("D:/data/result1.txt")
+      result.rdd.saveAsTextFile("./data/result1.txt")
     println("Test set accuracy = " + evaluator.evaluate(predictionAndLabels))
     
     // train the model
@@ -94,7 +94,7 @@ val data = spark.read.format("libsvm").load("D://data//cal_data.txt")
     val predictionAndLabels2 = result2.select("prediction", "label")
     val evaluator2 = new MulticlassClassificationEvaluator()
       .setMetricName("accuracy")
-      result2.rdd.saveAsTextFile("D:/data/result2.txt")
+      result2.rdd.saveAsTextFile("./data/result2.txt")
     println("Train set accuracy = " + evaluator2.evaluate(predictionAndLabels2))
     
     spark.stop()
